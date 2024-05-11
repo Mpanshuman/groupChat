@@ -1,7 +1,10 @@
 {% extends "base.html" %} {% block content %}
 <h1>Hello</h1>
 {% for room in rooms %}
+<a href="{% url 'create_room'%}">Create Room</a>
 <ul>
+<div>{{room.host.username}}</div>
   <li><a href="{% url 'roomDetails' room.id %}">{{room}}</a></li>
+  <div>{{room.topic.name}}</div>
 </ul>
 {% endfor %} {% endblock content %}
