@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Room, Topic
 from .forms.room_form import RoomForm
+from django.db.models import Q
 
 # Create your views here.
 
@@ -9,7 +10,11 @@ from .forms.room_form import RoomForm
 def home(request):
     # fetch data from url
     topic_name = request.GET.get("q") if request.GET.get("q") != None else ""
-    rooms = Room.objects.filter(topic__name__icontains=topic_name)
+    rooms = Room.objects.filter(
+        Q(topic__name__icontains=topic_name)
+        | Q(name__icontains=topic_name)
+        | Q(description__icontains=topic_name)
+    )
 
     # get all the topics
     topics = Topic.objects.all()
