@@ -1,14 +1,15 @@
 <div>
-    <div>
-        NavBar
-    </div>
-    <div>
-        Logi
-    </div>
-    <form action="" method="GET">
-        <input type="text" name="q">
-    </form>
-    <div>
-        Room Count: {{room_count}}
-    </div>
+  <div>NavBar</div>
+  <div>Logi</div>
+  <form action="" method="GET">
+    <input type="text" name="q" />
+  </form>
+  <div>Room Count: {{room_count}}</div>
+  <div>
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout'%}">Logout</a>
+    {% else %}
+    <a href="{% url 'loginuser'%}">Login</a>
+    {% endif %}
+  </div>
 </div>

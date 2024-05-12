@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from .models import Room, Topic
 from .forms.room_form import RoomForm
 from django.db.models import Q
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 # Create your views here.
 
@@ -65,3 +68,31 @@ def delete_room(request, pk):
         room.delete()
         return redirect("home")
     return render(request, "base/delete_room.html", {"room": room})
+
+
+def login_user(request):
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return HttpResponse(f"user with username {username} does not exist")
+
+        user = authenticate(request, username=username, password=password)
+
+        print(f"authenticated user :{user}")
+
+        if user:
+            login(request, user)
+            return redirect("home")
+        else:
+            messages.error(request, "Wrong Credentials")
+    return render(request, "base/login_register_form.html")
+
+
+def logout_url(request):
+    logout(request)
+    return redirect("home")
