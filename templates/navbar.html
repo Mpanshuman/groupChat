@@ -7,6 +7,7 @@
   <div>Room Count: {{room_count}}</div>
   <div>
     {% if request.user.is_authenticated %}
+    <p>Hello, {{request.user.username}}</p>
     <a href="{% url 'logout'%}">Logout</a>
     {% else %}
     <a href="{% url 'loginuser'%}">Login</a>

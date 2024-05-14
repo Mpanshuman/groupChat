@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from .forms.room_form import RoomForm
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
@@ -30,9 +30,17 @@ def home(request):
 def room_details(request, pk):
     try:
         room = Room.objects.get(pk=int(pk))
+        room_message = room.message_set.all()
     except Exception as e:
         return render(request, "base/room_details.html", {"error": f"{e}"})
-    return render(request, "base/room_details.html", {"room": room})
+
+    if request.method == "POST":
+        message = Message(user=request.user, room=room, body=request.POST.get("body"))
+        message.save()
+        return redirect("roomDetails", pk=room.id)
+    return render(
+        request, "base/room_details.html", {"room": room, "messages": room_message}
+    )
 
 
 def create_room(request):
