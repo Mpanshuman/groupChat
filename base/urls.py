@@ -7,6 +7,7 @@ from .views import (
     delete_room,
     login_user,
     logout_url,
+    user_registration,
 )
 
 urlpatterns = [
@@ -16,5 +17,6 @@ urlpatterns = [
     path("room/edit/<int:pk>/", update_room, name="update_room"),
     path("room/delete/<int:pk>/", delete_room, name="delete_room"),
     path("login/", login_user, name="loginuser"),
+    path("register/", user_registration, name="registeruser"),
     path("logout/", logout_url, name="logout"),
 ]

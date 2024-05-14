@@ -1,8 +1,15 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %} {% if page == 'login' %}
 <form action="" method="POST">
   {% csrf_token %}
   <input type="text" name="username" placeholder="username" />
   <input type="password" name="password" placeholder="password" />
-  <button type="submit">Submit</button>
+  <button type="submit" value="Login">Login</button>
 </form>
-{% endblock content %}
+<p>Do not have account?<a href="{% url 'registeruser'%}">Register</a></p>
+{% else %}
+<form action="" method="POST">
+  {% csrf_token %} {{form.as_table }}
+  <button type="submit" value="Register">Register</button>
+</form>
+<p>Already have account?<a href="{% url 'loginuser'%}">Login</a></p>
+{% endif %} {% endblock content %}

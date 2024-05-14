@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
 
@@ -71,7 +72,7 @@ def delete_room(request, pk):
 
 
 def login_user(request):
-
+    context = {"page": "login"}
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -90,9 +91,24 @@ def login_user(request):
             return redirect("home")
         else:
             messages.error(request, "Wrong Credentials")
-    return render(request, "base/login_register_form.html")
+    return render(request, "base/login_register_form.html", context)
 
 
 def logout_url(request):
     logout(request)
     return redirect("home")
+
+
+def user_registration(request):
+    form = UserCreationForm()
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            login(request, user)
+            return redirect("home")
+        else:
+            messages.error(request, "An error occured during registration")
+    return render(request, "base/login_register_form.html", {"form": form})
