@@ -31,6 +31,8 @@ def room_details(request, pk):
     try:
         room = Room.objects.get(pk=int(pk))
         room_message = room.message_set.all()
+        participants = room.participants.all()
+        # participants.add(request.user)
     except Exception as e:
         return render(request, "base/room_details.html", {"error": f"{e}"})
 
@@ -38,8 +40,11 @@ def room_details(request, pk):
         message = Message(user=request.user, room=room, body=request.POST.get("body"))
         message.save()
         return redirect("roomDetails", pk=room.id)
+    print(room)
     return render(
-        request, "base/room_details.html", {"room": room, "messages": room_message}
+        request,
+        "base/room_details.html",
+        {"room": room, "room_messages": room_message, "participants": participants},
     )
 
 
@@ -120,3 +125,17 @@ def user_registration(request):
         else:
             messages.error(request, "An error occured during registration")
     return render(request, "base/login_register_form.html", {"form": form})
+
+
+def delete_message(request, pk):
+    try:
+        message = Message.objects.get(pk=pk)
+        if request.user != message.user:
+            messages.error(request, "You are not authorized to delete this message")
+            return redirect("home")
+        if request.method == "POST":
+            message.delete()
+            return redirect("home")
+    except Message.DoesNotExist:
+        return HttpResponse("Message Not found")
+    return render(request, "base/delete_room.html", {"room": message})
